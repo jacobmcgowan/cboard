@@ -405,16 +405,16 @@ export class SymbolSearch extends PureComponent {
     this.getSuggestions(this.state.value);
   };
 
-  handleSkinToneChange = event => {
-    const newSkin = event ? event.target.value : defaultSkin;
+  handleSkinToneChange = value => {
+    const newSkin = value || defaultSkin;
     this.setState({
       skin: newSkin
     });
     this.getSuggestions(this.state.value);
   };
 
-  handleHairColorChange = event => {
-    const newHair = event ? event.target.value : defaultHair;
+  handleHairColorChange = value => {
+    const newHair = value || defaultHair;
     this.setState({
       hair: newHair
     });
@@ -445,12 +445,24 @@ export class SymbolSearch extends PureComponent {
         </div>
       ) : null;
 
+    const inclusivityOptions = this.showInclusivityOptions ? (
+      <div>
+        <div>
+          <SkinToneSelect
+            selectedColor={this.state.skin}
+            onChange={this.handleSkinToneChange}
+          />
+        </div>
+        <div>
+          <HairColorSelect
+            selectedColor={this.state.hair}
+            onChange={this.handleHairColorChange}
+          />
+        </div>
+      </div>
+    ) : null;
     const autoSuggest = (
-      <div
-        className={`react-autosuggest__container ${
-          this.showInclusivityOptions ? 'more-options' : ''
-        }`}
-      >
+      <div className="react-autosuggest__container">
         <Autosuggest
           aria-label="Search auto-suggest"
           alwaysRenderSuggestions={true}
@@ -471,6 +483,7 @@ export class SymbolSearch extends PureComponent {
             onChange: this.handleChange
           }}
         />
+        {inclusivityOptions}
         {clearButton}
       </div>
     );
@@ -481,18 +494,6 @@ export class SymbolSearch extends PureComponent {
       this.state.suggestions.length === 0 ? (
         <SymbolNotFound />
       ) : null;
-    const inclusivityOptions = this.showInclusivityOptions ? (
-      <div class="filter-options-item ">
-        <SkinToneSelect
-          selectedColor={this.state.skin}
-          onChange={this.handleSkinToneChange}
-        />
-        <HairColorSelect
-          selectedColor={this.state.hair}
-          onChange={this.handleHairColorChange}
-        />
-      </div>
-    ) : null;
     const symbolSetOptions = (
       <div class="filter-options-item">
         <FilterBar
@@ -510,10 +511,7 @@ export class SymbolSearch extends PureComponent {
           transition="fade"
           onClose={onClose}
         >
-          <div class="filter-options">
-            {inclusivityOptions}
-            {symbolSetOptions}
-          </div>
+          <div class="filter-options">{symbolSetOptions}</div>
           {symbolNotFound}
         </FullScreenDialog>
       </div>

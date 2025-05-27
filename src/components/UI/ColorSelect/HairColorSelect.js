@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
-import FormControl from '@material-ui/core/FormControl';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
 
-import Circle from './Circle';
 import messages from './HairColor.messages';
+import { Face } from '@material-ui/icons';
 
 const hairColorSources = new Map([
   [
@@ -57,6 +55,7 @@ class HairColorSelect extends React.Component {
     super(props);
 
     this.state = {
+      open: false,
       sourceName: sourcesNames.has(props.source)
         ? sourcesNames.get(props.source)
         : sourcesNames.get('arasaac'),
@@ -66,41 +65,43 @@ class HairColorSelect extends React.Component {
     };
   }
 
+  handleClose() {
+    this.setState({ open: false });
+  }
+
+  handleOpen() {
+    this.setState({ open: true });
+  }
+
+  handleChange(value, callback) {
+    callback(value);
+    this.handleClose();
+  }
+
   render() {
     const { intl, onChange, selectedColor } = this.props;
     const hairColorLabel = `${this.state.sourceName} ${intl.formatMessage(
       messages.hairColor
     )}`;
-    const radioGroupStyle = { flexDirection: 'row' };
-    const radioItemStyle = { padding: '2px' };
 
     return (
-      <FormControl className="ColorSelect">
-        <label>{hairColorLabel}</label>
-        <RadioGroup
-          aria-label={hairColorLabel}
-          name="hairColor"
-          value={selectedColor}
-          style={radioGroupStyle}
-          onChange={onChange}
-        >
-          {this.state.hairColorMenu.map(hairColor => (
-            <Radio
-              key={hairColor.name}
-              value={hairColor.name}
-              style={radioItemStyle}
-              icon={<Circle fill={hairColor.color} />}
-              checkedIcon={
-                <Circle
-                  fill={hairColor.color}
-                  color="primary"
-                  strokeWidth={3}
-                />
-              }
-            />
-          ))}
-        </RadioGroup>
-      </FormControl>
+      <SpeedDial
+        ariaLabel={hairColorLabel}
+        icon={<Face />}
+        direction="down"
+        open={this.state.open}
+        onClose={() => this.handleClose()}
+        onOpen={() => this.handleOpen()}
+      >
+        {this.state.hairColorMenu.map(hairColor => (
+          <SpeedDialAction
+            key={hairColor.name}
+            icon={<Face />}
+            tooltipTitle={hairColor.name}
+            onClick={() => this.handleChange(hairColor.name, onChange)}
+          />
+        ))}
+      </SpeedDial>
     );
   }
 }

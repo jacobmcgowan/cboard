@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
-import FormControl from '@material-ui/core/FormControl';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import { SpeedDial, SpeedDialAction } from '@material-ui/lab';
 
-import Circle from './Circle';
 import messages from './SkinTone.messages';
+import { PanTool } from '@material-ui/icons';
 
 const skinToneSources = new Map([
   [
@@ -49,6 +47,7 @@ class SkinToneSelect extends React.Component {
     super(props);
 
     this.state = {
+      open: false,
       sourceName: sourcesNames.has(props.source)
         ? sourcesNames.get(props.source)
         : sourcesNames.get('arasaac'),
@@ -58,37 +57,44 @@ class SkinToneSelect extends React.Component {
     };
   }
 
+  handleClose() {
+    this.setState({ open: false });
+  }
+
+  handleOpen() {
+    this.setState({ open: true });
+  }
+
+  handleChange(value, callback) {
+    callback(value);
+    this.handleClose();
+  }
+
   render() {
     const { intl, onChange, selectedColor } = this.props;
     const skinToneLabel = `${this.state.sourceName} ${intl.formatMessage(
       messages.skinTone
     )}`;
-    const radioGroupStyle = { flexDirection: 'row' };
-    const radioItemStyle = { padding: '2px' };
 
     return (
-      <FormControl className="ColorSelect">
-        <label>{skinToneLabel}</label>
-        <RadioGroup
-          aria-label={skinToneLabel}
-          name="skinTone"
-          value={selectedColor}
-          style={radioGroupStyle}
-          onChange={onChange}
-        >
-          {this.state.skinToneMenu.map(skinTone => (
-            <Radio
-              key={skinTone.name}
-              value={skinTone.name}
-              style={radioItemStyle}
-              icon={<Circle fill={skinTone.color} />}
-              checkedIcon={
-                <Circle fill={skinTone.color} color="primary" strokeWidth={3} />
-              }
-            />
-          ))}
-        </RadioGroup>
-      </FormControl>
+      <SpeedDial
+        ariaLabel={skinToneLabel}
+        icon={<PanTool />}
+        hidden={false}
+        direction="down"
+        open={this.state.open}
+        onClose={() => this.handleClose()}
+        onOpen={() => this.handleOpen()}
+      >
+        {this.state.skinToneMenu.map(skinTone => (
+          <SpeedDialAction
+            key={skinTone.name}
+            icon={<PanTool />}
+            tooltipTitle={skinTone.name}
+            onClick={() => this.handleChange(skinTone.name, onChange)}
+          />
+        ))}
+      </SpeedDial>
     );
   }
 }
