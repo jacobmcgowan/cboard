@@ -55,7 +55,7 @@ import {
   addDefaultBoardIncluded,
   verifyAndUpsertCommunicator
 } from '../Communicator/Communicator.actions';
-import { isAndroid, writeCvaFile } from '../../cordova-util';
+import { isAndroid, readCvaFile, writeCvaFile } from '../../cordova-util';
 import { DEFAULT_BOARDS } from '../../helpers';
 import history from './../../history';
 import { improvePhraseAbortController } from '../../api/api';
@@ -677,10 +677,26 @@ export function downloadImages() {
 
 async function storeImage(image, id, type) {
   let element = null;
+  const fileName = getFileNameFromUrl(image);
+
+  if (isAndroid()) {
+    try {
+      const filePath = '/Android/data/com.unicef.cboard/files/' + fileName;
+      const fEntry = await readCvaFile(filePath);
+      return {
+        id: id,
+        type: type,
+        url: image,
+        location: fEntry.nativeURL
+      };
+    } catch (err) {
+      // file does not exist, download it
+    }
+  }
+
   try {
     let response = await fetch(image);
     const blob = await response.blob();
-    const fileName = getFileNameFromUrl(image);
     if (isAndroid()) {
       const filePath = '/Android/data/com.unicef.cboard/files/' + fileName;
       const fEntry = await writeCvaFile(filePath, blob);
