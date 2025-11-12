@@ -181,6 +181,7 @@ export class BoardContainer extends Component {
     downloadImages: PropTypes.func,
     lang: PropTypes.string,
     isRootBoardTourEnabled: PropTypes.bool,
+    isSymbolSearchTourEnabled: PropTypes.bool,
     disableTour: PropTypes.func,
     isLiveMode: PropTypes.bool,
     changeDefaultBoard: PropTypes.func
@@ -1589,6 +1590,7 @@ export class BoardContainer extends Component {
           isSelectAll={this.state.isSelectAll}
           isFixedBoard={this.state.isFixedBoard}
           isRootBoardTourEnabled={this.props.isRootBoardTourEnabled}
+          isSymbolSearchTourEnabled={this.props.isSymbolSearchTourEnabled}
           isUnlockedTourEnabled={this.props.isUnlockedTourEnabled}
           //updateBoard={this.handleUpdateBoard}
           onAddClick={this.handleAddClick}
@@ -1724,6 +1726,8 @@ export class BoardContainer extends Component {
               this.props.communicator.boards.includes(board.id)
           )}
           userData={this.props.userData}
+          isSymbolSearchTourEnabled={this.props.isSymbolSearchTourEnabled}
+          disableTour={this.props.disableTour}
         />
       </Fragment>
     );
@@ -1764,6 +1768,7 @@ const mapStateToProps = ({
     lang,
     offlineVoiceAlert,
     isRootBoardTourEnabled: liveHelp.isRootBoardTourEnabled,
+    isSymbolSearchTourEnabled: liveHelp.isSymbolSearchTourEnabled,
     isUnlockedTourEnabled: liveHelp.isUnlockedTourEnabled,
     isPremiumRequiredModalOpen: premiumRequiredModalState?.open,
     improvedPhrase: board.improvedPhrase

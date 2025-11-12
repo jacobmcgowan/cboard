@@ -70,7 +70,9 @@ export class TileEditor extends Component {
      */
     onAddSubmit: PropTypes.func.isRequired,
     boards: PropTypes.array,
-    userData: PropTypes.object
+    userData: PropTypes.object,
+    isSymbolSearchTourEnabled: PropTypes.bool,
+    disableTour: PropTypes.func
   };
 
   static defaultProps = {
@@ -701,6 +703,9 @@ export class TileEditor extends Component {
             autoFill={this.state.autoFill}
             onChange={this.handleSymbolSearchChange}
             onClose={this.handleSymbolSearchClose}
+            disableTour={this.props.disableTour}
+            intl={intl}
+            isSymbolSearchTourEnabled={this.props.isSymbolSearchTourEnabled}
           />
         </FullScreenDialog>
       </div>

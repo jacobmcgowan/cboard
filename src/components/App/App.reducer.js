@@ -31,7 +31,8 @@ const initialState = {
       isPublicBoardsEnabled: true,
       isAllMyBoardsEnabled: true
     },
-    isAnalyticsTourEnabled: true
+    isAnalyticsTourEnabled: true,
+    isSymbolSearchTourEnabled: true
   },
   displaySettings: {
     uiSize: DISPLAY_SIZE_STANDARD,
@@ -133,7 +134,8 @@ function appReducer(state = initialState, action) {
             isPublicBoardsEnabled: true,
             isAllMyBoardsEnabled: true
           },
-          isAnalyticsTourEnabled: true
+          isAnalyticsTourEnabled: true,
+          isSymbolSearchTourEnabled: true
         }
       };
 
