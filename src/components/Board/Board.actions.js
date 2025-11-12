@@ -89,6 +89,12 @@ function getActiveCommunicator(getState) {
   return activeCommunicator;
 }
 
+function replaceHistoryWithActiveBoardId(getState) {
+  const { board } = getState();
+  const id = board.activeBoardId;
+  history.replace(`/board/${id}`);
+}
+
 export function changeDefaultBoard(selectedBoardNameOnJson) {
   return (dispatch, getState) => {
     const board = DEFAULT_BOARDS[selectedBoardNameOnJson];
@@ -266,14 +272,20 @@ export function changeBoard(boardId) {
 }
 
 export function previousBoard() {
-  return {
-    type: PREVIOUS_BOARD
+  return (dispatch, getState) => {
+    dispatch({
+      type: PREVIOUS_BOARD
+    });
+    replaceHistoryWithActiveBoardId(getState);
   };
 }
 
 export function toRootBoard() {
-  return {
-    type: TO_ROOT_BOARD
+  return (dispatch, getState) => {
+    dispatch({
+      type: TO_ROOT_BOARD
+    });
+    replaceHistoryWithActiveBoardId(getState);
   };
 }
 
@@ -425,9 +437,25 @@ export function createApiBoardFailure(message) {
 }
 
 export function updateApiBoardSuccess(board) {
-  return {
-    type: UPDATE_API_BOARD_SUCCESS,
-    board
+  return dispatch => {
+    const { isLocalUpdateNeeded, ...boardData } = board ?? {};
+
+    if (!board || Object.keys(boardData).length === 0) {
+      dispatch(updateApiBoardFailure('No board data to update'));
+      return;
+    }
+
+    if (isLocalUpdateNeeded) {
+      dispatch({
+        type: UPDATE_BOARD,
+        boardData: boardData
+      });
+    }
+
+    dispatch({
+      type: UPDATE_API_BOARD_SUCCESS,
+      boardData
+    });
   };
 }
 
